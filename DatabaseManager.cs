@@ -18,6 +18,8 @@ namespace Example.MySql
 
         private string connectionString = "server=localhost;database=disoveral;uid=root;pwd=;";
 
+        public string nuevoCorreo = "nuevoCorreo@example.com";
+
         #endregion
 
         #region UI
@@ -81,6 +83,32 @@ namespace Example.MySql
                 if (userCount > 0)
                 {
                     Debug.Log("Login successful");
+
+                    // Obtener el correo del usuario
+                    query = "SELECT email FROM tb_user WHERE username = @username";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@username", username);
+
+                    string email = cmd.ExecuteScalar().ToString();
+                    Debug.Log("Correo del usuario: " + email);
+
+                    // Cambiar el correo del usuario
+                    query = "UPDATE tb_user SET email = @nuevoCorreo WHERE username = @username";
+                    cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@nuevoCorreo", nuevoCorreo);
+                    cmd.Parameters.AddWithValue("@username", username);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Debug.Log("Correo actualizado exitosamente.");
+                    }
+                    else
+                    {
+                        Debug.Log("Error al actualizar el correo.");
+                    }
+
                     // Aquí puedes agregar el código para avanzar a la siguiente escena o dar acceso al usuario.
                 }
                 else
